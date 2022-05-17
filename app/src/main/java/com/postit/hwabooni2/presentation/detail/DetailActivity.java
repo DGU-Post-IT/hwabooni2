@@ -3,19 +3,26 @@ package com.postit.hwabooni2.presentation.detail;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.MotionEvent;
+import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.postit.hwabooni2.R;
 import com.postit.hwabooni2.databinding.ActivityDetailBinding;
+import com.postit.hwabooni2.model.Emotion;
+import com.postit.hwabooni2.model.FriendData;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.DayViewDecorator;
 import com.prolificinteractive.materialcalendarview.DayViewFacade;
@@ -41,6 +48,24 @@ public class DetailActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String id = intent.getStringExtra(EXTRA_ID_KEY);
         if (id == null) finish();
+
+        db.collection("dummyFriend").document(id).get().addOnCompleteListener((task -> {
+            if(task.isSuccessful()){
+                FriendData data = task.getResult().toObject(FriendData.class);
+                binding.friendName.setText(data.getName());
+
+                Drawable drawable = AppCompatResources.getDrawable(binding.getRoot().getContext(), Emotion.values()[Integer.parseInt(data.getEmotion())].getIcon());
+                binding.friendEmotionView.setImageDrawable(drawable);
+
+                binding.plantImageView.setVisibility(View.VISIBLE);
+                Glide.with(binding.getRoot())
+                        .load(data.getPlantImage())
+                        .transform(new CenterCrop(), new RoundedCorners(12))
+                        .into(binding.plantImageView);
+
+            }
+        }));
+
 
 
         LocalDateTime today = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
