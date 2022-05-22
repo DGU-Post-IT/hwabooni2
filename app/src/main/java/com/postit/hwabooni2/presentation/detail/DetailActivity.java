@@ -2,6 +2,7 @@ package com.postit.hwabooni2.presentation.detail;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -16,6 +17,12 @@ import androidx.appcompat.content.res.AppCompatResources;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -31,7 +38,9 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.temporal.TemporalAdjusters;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class DetailActivity extends AppCompatActivity {
@@ -50,7 +59,7 @@ public class DetailActivity extends AppCompatActivity {
         if (id == null) finish();
 
         db.collection("dummyFriend").document(id).get().addOnCompleteListener((task -> {
-            if(task.isSuccessful()){
+            if (task.isSuccessful()) {
                 FriendData data = task.getResult().toObject(FriendData.class);
                 binding.friendName.setText(data.getName());
 
@@ -65,7 +74,6 @@ public class DetailActivity extends AppCompatActivity {
 
             }
         }));
-
 
 
         LocalDateTime today = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
@@ -97,8 +105,46 @@ public class DetailActivity extends AppCompatActivity {
                 if (count.incrementAndGet() == 2) updateDecorator(check);
             }
         });
+        initBarChart();
+        ArrayList<BarEntry> arr = new ArrayList<>();
+        Random random = new Random();
+        for (int i = 0; i < 30; i++) {
+            arr.add(new BarEntry(i, random.nextFloat() ));
+        }
+        BarDataSet bds = new BarDataSet(arr, "");
+        bds.setDrawValues(false);
+        bds.setColor(Color.YELLOW);
 
+        binding.dailyLogBarChart.setData(new BarData(bds));
+        binding.dailyLogBarChart.invalidate();
 
+    }
+
+    private void initBarChart() {
+        binding.dailyLogBarChart.setDefaultFocusHighlightEnabled(false);
+        binding.dailyLogBarChart.setHighlightPerTapEnabled(false);
+        binding.dailyLogBarChart.setHighlightPerDragEnabled(false);
+
+        binding.dailyLogBarChart.setClickable(false);
+        binding.dailyLogBarChart.setDoubleTapToZoomEnabled(false);
+
+        binding.dailyLogBarChart.setDrawBorders(false);
+        binding.dailyLogBarChart.setDrawGridBackground(false);
+
+        binding.dailyLogBarChart.getDescription().setEnabled(false);
+        binding.dailyLogBarChart.getLegend().setEnabled(false);
+
+        binding.dailyLogBarChart.getAxisLeft().setDrawGridLines(false);
+        binding.dailyLogBarChart.getAxisLeft().setDrawLabels(false);
+        binding.dailyLogBarChart.getAxisLeft().setDrawAxisLine(false);
+
+        binding.dailyLogBarChart.getXAxis().setDrawGridLines(false);
+        binding.dailyLogBarChart.getXAxis().setDrawLabels(false);
+        binding.dailyLogBarChart.getXAxis().setDrawAxisLine(false);
+
+        binding.dailyLogBarChart.getAxisRight().setDrawGridLines(false);
+        binding.dailyLogBarChart.getAxisRight().setDrawLabels(false);
+        binding.dailyLogBarChart.getAxisRight().setDrawAxisLine(false);
     }
 
     void updateDecorator(int[] chk) {

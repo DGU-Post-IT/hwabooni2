@@ -156,11 +156,11 @@
                     android:text="일일 로그 기록"
                     android:textSize="22sp" />
 
-                <ImageView
+                <com.github.mikephil.charting.charts.BarChart
+                    android:id="@+id/daily_log_bar_chart"
                     android:paddingHorizontal="5dp"
                     android:layout_width="match_parent"
-                    android:layout_height="85dp"
-                    android:src="@drawable/temp_1" />
+                    android:layout_height="85dp" />
 
             </LinearLayout>
 
@@ -186,11 +186,11 @@
                     android:text="월간 기록 분포"
                     android:textSize="22sp" />
 
-                <ImageView
+                <com.github.mikephil.charting.charts.BarChart
+                    android:id="@+id/monthly_log_bar_chart"
                     android:paddingHorizontal="5dp"
                     android:layout_width="match_parent"
-                    android:layout_height="85dp"
-                    android:src="@drawable/temp_1" />
+                    android:layout_height="85dp" />
 
             </LinearLayout>
 
