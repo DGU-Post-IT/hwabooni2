@@ -31,10 +31,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import coil.compose.AsyncImage
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.toObject
 import com.postit.hwabooni2.R
 import com.postit.hwabooni2.model.Emotion
 import com.postit.hwabooni2.model.FriendData
 import com.postit.hwabooni2.presentation.detail.DetailActivity
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
+import java.util.concurrent.atomic.AtomicInteger
 
 class MainActivity : AppCompatActivity() {
     private val TAG = "NewMainActivity"
@@ -45,16 +49,28 @@ class MainActivity : AppCompatActivity() {
 
         val data = MutableLiveData(listOf<FriendData>())
 
-        db.collection("dummyFriend").get().addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                val temp = mutableListOf<FriendData>()
-                for (doc in task.result) {
-                    Log.d(TAG, "onCreate: $doc")
-                    temp.add(doc.toObject(FriendData::class.java))
+        db.collection("SocialWorker").document("leehakyung").get()
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val temp = mutableListOf<FriendData>()
+                    val list = (task.result.get("follower") as? List<String>)
+                    list?.let {
+                        var cnt = AtomicInteger(list.size)
+                        list.forEach {
+                            db.collection("User").document(it).get().addOnCompleteListener {
+                                if(task.isSuccessful){
+                                    it.result.toObject<FriendData>()?.let {
+                                        temp.add(it)
+                                    }
+                                }
+                                if(cnt.decrementAndGet()==0){
+                                    data.postValue(temp)
+                                }
+                            }
+                        }
+                    }
                 }
-                data.postValue(temp)
             }
-        }
 
         setContent {
             MainScreen(data)
@@ -123,7 +139,7 @@ fun FriendCardView(data: FriendData) {
             .height(106.dp)
             .fillMaxWidth()
             .padding(horizontal = 14.dp)
-            .clickable { context.startActivity(DetailActivity.getIntent(context,data.id)) },
+            .clickable { context.startActivity(DetailActivity.getIntent(context, data.id)) },
         elevation = 1.dp,
         shape = RoundedCornerShape(2.dp)
     ) {
@@ -189,7 +205,7 @@ fun TeacherCardView() {
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Spacer(modifier = Modifier.width(22.dp))
-            Text(text = "한유주 선생님", fontSize = 18.sp, fontWeight = FontWeight.ExtraBold)
+            Text(text = "이하경 선생님", fontSize = 18.sp, fontWeight = FontWeight.ExtraBold)
         }
     }
 }

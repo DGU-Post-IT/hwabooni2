@@ -93,14 +93,35 @@
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="4dp"
                     android:layout_marginStart="12dp"
-                    android:text="물"
+                    android:text="현재 습도"
                     android:textSize="22sp" />
 
-                <ImageView
+                <LinearLayout
+                    android:id="@+id/humid_bar"
                     android:layout_width="match_parent"
-                    android:paddingHorizontal="5dp"
-                    android:layout_height="85dp"
-                    android:src="@drawable/water_1" />
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <com.postit.hwabooni2.widget.IndicatorBarView
+                        android:id="@+id/humid_indicator"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="10dp"
+                        app:leftText="건조해요"
+                        app:midText="좋아요"
+                        app:rightText="충분해요"
+                        app:strokeColor="@color/stroke_blue"
+                        app:indicatorColor="@color/indicator_blue"
+                        android:visibility="visible" />
+
+                    <ImageView
+                        android:id="@+id/humidNo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/water_no"
+                        android:visibility="gone" />
+
+                </LinearLayout>
 
             </LinearLayout>
 
@@ -123,14 +144,35 @@
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="4dp"
                     android:layout_marginStart="12dp"
-                    android:text="온도"
+                    android:text="현재 온도"
                     android:textSize="22sp" />
 
-                <ImageView
-                    android:paddingHorizontal="5dp"
+                <LinearLayout
+                    android:id="@+id/temp_bar"
                     android:layout_width="match_parent"
-                    android:layout_height="85dp"
-                    android:src="@drawable/temp_1" />
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <com.postit.hwabooni2.widget.IndicatorBarView
+                        android:id="@+id/temp_indicator"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="10dp"
+                        app:leftText="추워요"
+                        app:midText="좋아요"
+                        app:rightText="더워요"
+                        app:strokeColor="@color/stroke_yellow"
+                        app:indicatorColor="@color/indicator_yellow"
+                        android:visibility="visible" />
+
+                    <ImageView
+                        android:id="@+id/tempNo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/temp_no"
+                        android:visibility="gone" />
+
+                </LinearLayout>
 
             </LinearLayout>
 
@@ -186,7 +228,7 @@
                     android:text="월간 기록 분포"
                     android:textSize="22sp" />
 
-                <com.github.mikephil.charting.charts.BarChart
+                <com.postit.hwabooni2.widget.ProportionBarView
                     android:id="@+id/monthly_log_bar_chart"
                     android:paddingHorizontal="5dp"
                     android:layout_width="match_parent"

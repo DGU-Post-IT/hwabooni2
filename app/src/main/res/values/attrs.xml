@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="IndicatorBarView">
+        <attr name="strokeColor" format="color" />
+        <attr name="indicatorColor" format="color" />
+        <attr name="leftText" format="string" />
+        <attr name="midText" format="string" />
+        <attr name="rightText" format="string" />
+    </declare-styleable>
+</resources>
