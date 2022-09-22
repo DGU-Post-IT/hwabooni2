@@ -58,12 +58,12 @@ class MainActivity : AppCompatActivity() {
                         var cnt = AtomicInteger(list.size)
                         list.forEach {
                             db.collection("User").document(it).get().addOnCompleteListener {
-                                if(task.isSuccessful){
+                                if (task.isSuccessful) {
                                     it.result.toObject<FriendData>()?.let {
                                         temp.add(it)
                                     }
                                 }
-                                if(cnt.decrementAndGet()==0){
+                                if (cnt.decrementAndGet() == 0) {
                                     data.postValue(temp)
                                 }
                             }
@@ -162,7 +162,10 @@ fun FriendCardView(data: FriendData) {
                 color = Color.Black
             )
             Image(
-                painter = painterResource(id = Emotion.values()[data.emotion.toInt()].icon),
+                painter = data.emotion?.let {
+                    painterResource(id = Emotion.values()[data.emotion.toInt()].icon)
+                }
+                    ?: painterResource(id = R.drawable.ic_baseline_question_mark_24),
                 modifier = Modifier
                     .width(55.dp)
                     .height(55.dp),
@@ -193,6 +196,7 @@ fun FriendCardView(data: FriendData) {
         }
     }
 }
+
 
 @Composable
 fun TeacherCardView() {

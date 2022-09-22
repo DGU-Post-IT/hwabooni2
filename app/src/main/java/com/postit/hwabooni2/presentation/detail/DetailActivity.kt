@@ -163,19 +163,44 @@ class DetailActivity : AppCompatActivity() {
 //            }
 
         /*
-        앱 사용 기록 바 그래프 (랜덤 데이터)
+        앱 사용 기록 바 그래프 (db에 있는 데이터)
          */
         initBarChart()
         val arr = ArrayList<BarEntry>()
         val random = Random()
-        for (i in 0..29) {
-            arr.add(BarEntry(i.toFloat(), random.nextFloat()))
-        }
-        val bds = BarDataSet(arr, "")
-        bds.setDrawValues(false)
-        bds.color = android.graphics.Color.YELLOW
-        binding.dailyLogBarChart.data = BarData(bds)
-        binding.dailyLogBarChart.invalidate()
+        val cal = Calendar.getInstance()
+        val maxDay = cal.getActualMaximum(Calendar.DAY_OF_MONTH)
+        val logs = Array(maxDay+1){0f}
+        db.collection("User").document(id)
+            .collection("usage")
+            .whereGreaterThanOrEqualTo("timestamp", date)
+            .orderBy("timestamp")
+            .get().addOnCompleteListener {
+                if (it.isSuccessful) {
+                    it.result.documents.forEach {
+                        val day = (it.get("timestamp") as Timestamp).toDate().date
+                        logs[day] = ((it.get("usage") as Long).toFloat())
+                        Log.d(TAG, "onCreate: " + day)
+                    }
+                    for (i in 1 .. maxDay) {
+                        arr.add(BarEntry(i.toFloat(), if(logs[i]==0f)0.1f else logs[i]))
+                    }
+                    val bds = BarDataSet(arr, "")
+                    bds.setDrawValues(false)
+                    bds.color = android.graphics.Color.YELLOW
+                    binding.dailyLogBarChart.data = BarData(bds)
+                    binding.dailyLogBarChart.invalidate()
+                }
+            }
+//        for (i in 0 .. maxDay) {
+//            arr.add(BarEntry(i.toFloat(), logs[i]))
+//        }
+//        val bds = BarDataSet(arr, "")
+//        bds.setDrawValues(false)
+//        bds.color = android.graphics.Color.YELLOW
+//        binding.dailyLogBarChart.data = BarData(bds)
+//        binding.dailyLogBarChart.invalidate()
+
         binding.root.viewTreeObserver.addOnScrollChangedListener {
             val scrollBounds = Rect()
             binding.root.getHitRect(scrollBounds)
