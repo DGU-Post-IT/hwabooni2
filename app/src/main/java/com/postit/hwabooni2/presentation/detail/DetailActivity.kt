@@ -68,7 +68,7 @@ class DetailActivity : AppCompatActivity() {
                     val data = task.result.toObject(FriendData::class.java)
                     binding.friendName.text = data!!.name
                     val drawable = AppCompatResources.getDrawable(
-                        binding.root.context, Emotion.values()[data.emotion.toInt()].icon
+                        binding.root.context, if(data.emotion !=null) Emotion.values()[data.emotion.toInt()].icon else R.drawable.ic_baseline_question_mark_24
                     )
                     binding.friendEmotionView.setImageDrawable(drawable)
                     binding.plantImageView.visibility = View.VISIBLE
